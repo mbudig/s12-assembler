@@ -24,32 +24,41 @@ public class S12_Parser {
             Scanner scanner = new Scanner(new File(inputFile));
             PrintWriter writer = new PrintWriter(outputFile)
         ) {
+            // loop through comments
+            String line = scanner.nextLine().trim();
+            while (line.startsWith("//")) {
+                line = scanner.nextLine().trim();
+            }
             int lineNumber = 0;
 
             // write binary value for PC and ALU
             writer.println("00000000 000000000000");
 
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
+            while (scanner.hasNextLine() || !line.isEmpty()) {
 
-                if (!line.isEmpty() && !line.startsWith("//")) { // skip empty & comments
+                // Format line number as 2-digit hex (uppercase)
+                String hexLine = String.format("%02X", lineNumber);
+
+                if (!line.isEmpty()) {
                     String[] parts = line.split("\\s+");
                     String instruction = parts[0].toUpperCase();
                     int operand = (parts.length > 1) ? Integer.parseInt(parts[1], 16) : 0;
 
                     String binary = assemble(instruction, operand);
 
-                    // Format line number as 2-digit hex (uppercase)
-                    String hexLine = String.format("%02X", lineNumber);
-
                     // Write output with hex line number
-                    writer.println(hexLine + binary);
+                    writer.println(hexLine + " " + binary);
 
                     // Debug/console feedback
                     System.out.println(hexLine + ": " + line + " -> " + binary);
+                    
+                } else {
+                    writer.println(hexLine + " " + "000000000000"); // empty line
+                    System.out.println(hexLine + ": empty -> 000000000000");
                 }
 
                 lineNumber++;
+                line = scanner.nextLine().trim();
             }
 
             System.out.println("Assembly complete. Output written to " + outputFile);
@@ -78,7 +87,7 @@ public class S12_Parser {
             case "ADD":    opcode = "1010"; break;
             case "SUB":    opcode = "1011"; break;
             case "HALT":   opcode = "1111"; 
-                           return opcode + " 00000000"; // no operand, pad with zeros
+                           return opcode + "00000000"; // no operand, pad with zeros
             default:
                 throw new IllegalArgumentException("Unknown instruction: " + instruction);
         }
@@ -86,6 +95,6 @@ public class S12_Parser {
         // Convert operand to 8-bit binary
         String operandBinary = String.format("%8s", Integer.toBinaryString(operand & 0xFF)).replace(' ', '0');
 
-        return opcode + " " + operandBinary;
+        return opcode + operandBinary;
     }
 }

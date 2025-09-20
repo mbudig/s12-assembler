@@ -1,4 +1,8 @@
+// skip
+// skip
 LOAD 24
+
+
 SUB 22
 STORE 24
 LOADI 20
