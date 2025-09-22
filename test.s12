@@ -1,8 +1,30 @@
-// skip
-// skip
+// multiply an array of n integers
+// input:  array of integers
+// output: product of all integers in array
+// ex:     {2, 3, 4} -> 2*3*4 = 24
+// Authors: Matt Budig, Ben Dustin, Devin Deal, Sabastian Leper, CS  441-001 / ECE432-001/ CSE 432-001??? 
+// Usage: Place N (the number of integers) in the accumulator, followed by the integers
+//        starting at memory address 100.
+//         Run the program to compute the product of all
+//        integers in the array using a nested addition methodology. The final product is stored in memory 
+//       location 99 and in the accumulator when the program halts. 
+//        If the array is empty or a 0 is encountered, the result is 0 and the program halts. 
+JZ 1B
+STORE 00
+LOAD 00
+SUB 22
+JZ 1D
+STORE 00
+LOADI 20
+JZ 1B
+STORE 24
+LOAD 20
+ADD 22
+STORE 20
+LOADI 20
+JZ 1B
+STORE 1F
 LOAD 24
-
-
 SUB 22
 STORE 24
 LOADI 20
@@ -10,10 +32,10 @@ ADD 1F
 STORE 20
 LOAD 24
 SUB 22
-STORE 24
 JZ 02
+STORE 24
 JMP 12
 LOADI 000
 HALT
-LOADI 20
+LOADI 1F
 HALT

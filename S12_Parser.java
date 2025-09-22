@@ -29,17 +29,17 @@ public class S12_Parser {
             while (line.startsWith("//")) {
                 line = scanner.nextLine().trim();
             }
-            int lineNumber = 0;
+            
 
             // write binary value for PC and ALU
             writer.println("00000000 000000000000");
 
-            while (scanner.hasNextLine() || !line.isEmpty()) {
+            for (int lineNumber = 0; lineNumber < 256; lineNumber++) {
 
                 // Format line number as 2-digit hex (uppercase)
                 String hexLine = String.format("%02X", lineNumber);
 
-                if (!line.isEmpty()) {
+                if (scanner.hasNextLine() && !line.isEmpty()) {
                     String[] parts = line.split("\\s+");
                     String instruction = parts[0].toUpperCase();
                     int operand = (parts.length > 1) ? Integer.parseInt(parts[1], 16) : 0;
@@ -52,13 +52,27 @@ public class S12_Parser {
                     // Debug/console feedback
                     System.out.println(hexLine + ": " + line + " -> " + binary);
                     
+                } else if (!line.isEmpty()) {
+                                        String[] parts = line.split("\\s+");
+                    String instruction = parts[0].toUpperCase();
+                    int operand = (parts.length > 1) ? Integer.parseInt(parts[1], 16) : 0;
+
+                    String binary = assemble(instruction, operand);
+
+                    // Write output with hex line number
+                    writer.println(hexLine + " " + binary);
+
+                    // Debug/console feedback
+                    System.out.println(hexLine + ": " + line + " -> " + binary);
+                    line = "";
                 } else {
                     writer.println(hexLine + " " + "000000000000"); // empty line
                     System.out.println(hexLine + ": empty -> 000000000000");
                 }
 
-                lineNumber++;
-                line = scanner.nextLine().trim();
+                if (scanner.hasNextLine()){
+                    line = scanner.nextLine().trim();
+                }
             }
 
             System.out.println("Assembly complete. Output written to " + outputFile);
